@@ -2,9 +2,9 @@ services:
   mysql:
     image: mysql:8.0.33
     restart: unless-stopped
-    container_name: mysql_db  
+    container_name: mysql_db
     environment:
-      MYSQL_ROOT_PASSWORD: "samar123*/"  
+      MYSQL_ROOT_PASSWORD: "samar123*/"
       MYSQL_DATABASE: databaseBank
     ports:
       - "3306:3306"
@@ -18,18 +18,15 @@ services:
     depends_on:
       - mysql
     restart: on-failure
-    container_name: atlaslabs-backend  
+    container_name: atlaslabs-backend
     ports:
       - "8083:8083"
     environment:
-      SPRING_APPLICATION_JSON: |
-        {
-          "spring.datasource.url": "jdbc:mysql://mysql_db:3306/databaseBank?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true",
-          "spring.datasource.username": "root",
-          "spring.datasource.password": "samar123*/",
-          "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.MySQLDialect",
-          "spring.jpa.hibernate.ddl-auto": "update"
-        }
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql_db:3306/databaseBank?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "samar123*/"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.MySQLDialect"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
 
   frontend:
     build:
@@ -38,22 +35,9 @@ services:
     depends_on:
       - backend
     restart: on-failure
-    container_name: atlaslabs-frontend 
+    container_name: atlaslabs-frontend
     ports:
-      - "4200:80"  
-
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    ports:
-      - "8084:8080"
-      - "50000:50000" # Port pour les agents Jenkins
-    volumes:
-      - jenkins_home:/var/jenkins_home
-    environment:
-      - JENKINS_OPTS=--httpPort=8084
-    restart: always
+      - "4200:80"
 
 volumes:
   mysql_data:
-  jenkins_home:
